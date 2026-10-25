@@ -1,59 +1,126 @@
-# artifact-gallery · 交付物版本画廊
+# 🖼️ artifact-gallery · 交付物版本画廊
 
-一个 WorkBuddy 技能：像 NoCode / PPT 侧边缩略图一样，管理 AI 对话产出的交付物**版本时间线**。
+> 一个 **WorkBuddy 技能**：像 PPT 缩略图 / 美团的 NoCode 一样，把 AI 帮你反复改写的文件，整理成一个**带版本时间线的画廊**。
 
-## 它解决什么问题
+---
 
-AI 对话里反复改写同一份交付物（简历、报告、网页）时，旧版本会被直接覆盖、无处可寻。
-本技能把每次改动登记为快照，形成可回溯的版本画廊：
+## 一、这是什么？（一句话理解）
 
-- **左栏**：全部产物列表（同一文件跨对话自动累积版本）
-- **中栏**：放大预览选中版本（HTML 实时渲染）
-- **右栏**：PPT 式版本缩略图，**最新版本固定在最底部**
-- **点旧版本** → 仅放大预览，不改动任何文件
-- **点"回撤到此版本"** → 显式恢复（旧版本永不丢失，回撤本身也记为新版本）
+你在跟 AI（WorkBuddy）对话时，经常会让它反复改同一份东西——简历、报告、网页、方案……  
+**每改一版，旧版本就被覆盖了，想找回之前哪版特别难。**
 
-## 安装（WorkBuddy）
+这个技能就是帮你解决这个问题的：它把 AI 每一次产出的文件都**自动存一份快照**，然后给你一个像 PPT 那样、一排缩略图的"画廊"页面——
 
-方式一：导入 zip
-1. 把 `artifact-gallery/` 打包成 zip（或直接用 Release 里的 `artifact-gallery.zip`）
-2. WorkBuddy → 技能管理 → 导入技能 → 上传该 zip
-3. 要求：zip 内含 `SKILL.md`，且 SKILL.md frontmatter 有 `name` 与 `description`（本仓库已满足）
+- 想看之前的版本？点一下就放大；
+- 想退回某个旧版本？点"回撤"按钮就行；
+- 历史永远不丢。
 
-方式二：手动放置
-1. 把 `artifact-gallery/` 整个文件夹拷到 `~/.workbuddy/skills/artifact-gallery/`
-2. 重启 WorkBuddy 会话
+> 类比：想象你做 PPT 时，左边是全部幻灯片列表、右边是一排幻灯片缩略图（最新那张在最后），点哪张就在中间大图看——这个技能就是把**你让 AI 做的所有文件**做成这样一个"版本画廊"。
 
-## 使用
+---
 
-对 agent 说：
+## 二、它能帮你做什么？
 
-- 「把 \<文件\> 登记一个版本」→ `scripts/register_version.py <file> "<说明>"`
-- 「打开版本画廊」→ 两种查看方式：
-  - **离线单文件（推荐）**：`py scripts/build_gallery.py <输出路径.html>`，生成自包含 HTML（所有版本已内联），任意浏览器可开，无需服务器
-  - **在线画廊（支持一键回撤写文件）**：`py scripts/gallery_server.py [端口]`（默认 8731），打开 `http://localhost:8731`
+| 你看到的画面 | 能做的操作 |
+|---|---|
+| **左栏**：你所有的产出文件列表 | 一眼看到 AI 帮你做过哪些东西 |
+| **中栏**：选中版本的放大预览 | 像浏览器一样看 HTML / 下载文档 |
+| **右栏**：该文件的版本缩略图（**最新在底部**） | 同一份文件改过几次，一目了然 |
+| 点右栏里的旧版本 | **只预览，不动你的文件**（随便翻，不危险） |
+| 点中栏"↩ 回撤到此版本" | **显式恢复**旧版（且回撤动作本身也留一条新版本，永不丢失） |
 
-## 依赖
+**核心场景**：一个文件在多次对话里被反复改 → 自动累积出 `v1 → v2 → v3 …` 的时间线，而不是互相覆盖。
 
-- 仅 Python 3 标准库，**无需 pip 安装任何包**
-- 版本数据默认存 `<工作区>/.workbuddy/artifacts/`（`manifest.json` + 快照目录），可用环境变量 `ART_ROOT` 重定向
+---
 
-## 目录结构
+## 三、怎么安装？（不会敲命令也能装）
 
+### 最简单：导入压缩包（推荐给所有人）
+
+1. 在本仓库页面点 **Code → Download ZIP**，或者在 **Release** 里下载 `artifact-gallery.zip`；
+2. 打开 **WorkBuddy** → 找到 **技能管理 / 我的技能**（左侧或顶部的技能入口）；
+3. 点 **「导入技能」**，把下载的 `artifact-gallery.zip` 上传上去；
+4. 装好后在技能列表里就能看到 `artifact-gallery`。
+
+> ⚠️ 如果提示"已存在名为 artifact-gallery 的技能"——说明你**已经装过了**（本机技能目录里已有它），直接关掉弹窗即可，不用重复装。
+
+### 进阶：手动放置（适合开发者）
+
+把 `artifact-gallery/` 整个文件夹复制到 `~/.workbuddy/skills/artifact-gallery/`，重启 WorkBuddy 会话即可。
+
+- Windows：`C:\Users\你的用户名\.workbuddy\skills\artifact-gallery\`
+- macOS / Linux：`~/.workbuddy/skills/artifact-gallery/`
+
+### 想纯看历史、不装技能？
+
+本仓库里的 `artifact-gallery.zip` 解压后有一个**离线画廊文件**（`.html`），**任何浏览器直接双击就能打开**，不需要装 WorkBuddy、不需要 Python、不需要联网。把它发给同事，对方点开就能翻看你的版本历史。
+
+---
+
+## 四、怎么用？
+
+装好之后，你**不用记任何命令**，直接跟 WorkBuddy 说就行：
+
+| 你想做的事 | 对 WorkBuddy 说 |
+|---|---|
+| 把刚做好的文件存一个版本 | 「把 `<文件名>` 登记一个版本」 |
+| 看所有产物和版本 | 「打开版本画廊」 |
+| 某个文件改了一版，想留记录 | 「把这个文件登记成新版本，说明写：xxx」 |
+| 想退回之前的版本 | 在画廊里点旧版本预览 → 点"回撤到此版本" |
+
+技能会自动把版本快照存好，下次说"打开版本画廊"就能看到新版本堆在最底部。
+
+---
+
+## 五、常见问题（FAQ）
+
+**Q：为什么我在 WorkBuddy 里搜不到这个技能？**  
+A：本仓库是 **GitHub 代码仓库**，不是 WorkBuddy 官方的技能市场（SkillHub）。GitHub 上的仓库**不会**自动出现在 WorkBuddy 的搜索里。别人要用的话，按上面的"导入压缩包"方式手动安装即可；是否能在客户端里被公开搜到，取决于你的账号是否开放了 SkillHub 发布权限（目前多数个人账号需通过客户端里的"发布"入口，且可能需平台审核）。
+
+**Q：回撤会把我的文件弄坏吗？**  
+A：不会。回撤是把旧版本的快照**复制回**你的工作文件；而且回撤动作本身也会记成一条新版本，所以**所有历史都还在**，随时能再翻回去。
+
+**Q：我电脑上没装 Python 能用吗？**  
+A：能用。①"纯看历史"用离线 HTML，完全不依赖 Python；②"登记版本/生成画廊"需要 Python，但 WorkBuddy 自带托管的 Python，且本技能**只用 Python 标准库、无需 pip 装任何包**。
+
+**Q：版本数据存在哪？**  
+A：默认存在你工作区的 `.workbuddy/artifacts/` 目录（`manifest.json` + 各文件快照）。可用环境变量 `ART_ROOT` 指向其他位置。
+
+---
+
+## 六、技术细节（给开发者）
+
+### 目录结构
 ```
 artifact-gallery/
-├── SKILL.md                     # 技能说明（含 name/description frontmatter）
+├── SKILL.md                     # 技能说明（含 name / description frontmatter）
 ├── scripts/
 │   ├── register_version.py      # 版本登记：快照 + manifest 写入 + 版本递增
-│   ├── build_gallery.py         # 生成离线单文件画廊（内联全部版本）
-│   ├── gallery_server.py        # 本地画廊服务（支持回撤写文件）
-│   ├── seed_existing.py         # 批量导入已有交付物为 v1
-│   └── make_demo_multiversion.py# 单产物多版本演示
+│   ├── build_gallery.py         # 生成离线单文件画廊（内联全部版本，无需服务器）
+│   ├── gallery_server.py        # 本地画廊服务（支持一键回撤写文件，默认端口 8731）
+│   ├── seed_existing.py         # 批量把已有交付物导入为 v1
+│   └── make_demo_multiversion.py# 单产物多版本演示（含照抄JD/口语化/书面化三版示例）
 └── assets/
     ├── gallery.html             # 在线画廊页面模板
-    └── gallery_standalone.html  # 离线画廊模板（含 __DATA__ 占位）
+    └── gallery_standalone.html  # 离线画廊模板（含 __DATA__ 占位符）
 ```
 
-## License
+### 核心命令
+```bash
+# 登记一个版本（同一文件反复登记会自动 v1→v2→v3 累积）
+python scripts/register_version.py <文件> "<说明>"
 
-MIT
+# 生成离线画廊（推荐）：输出一个自包含 HTML，任意浏览器可开
+python scripts/build_gallery.py <输出路径.html>
+
+# 启动在线画廊（支持画廊内直接回撤写文件）
+python scripts/gallery_server.py [端口]   # 默认 http://localhost:8731
+```
+
+### 依赖
+- 仅需 **Python 3 标准库**，无需 `pip install` 任何第三方包。
+
+---
+
+## License
+MIT © artifact-gallery
