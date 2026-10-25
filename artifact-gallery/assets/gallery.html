@@ -106,20 +106,24 @@
   .focus-card .fmeta .fd { font-size: 12px; color: #5a6573; line-height: 1.55; margin-top: 7px;
                            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-  .tl { position: relative; padding-left: 18px; }
-  .tl::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: #eef0f3; }
-  .tl-item { position: relative; padding: 7px 10px 7px 4px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; }
-  .tl-item:hover { background: #f5f7fa; }
-  .tl-item::before { content: ""; position: absolute; left: -16.5px; top: 13px; width: 9px; height: 9px;
-                     border-radius: 50%; background: #fff; border: 2px solid #c9ced6; }
-  .tl-item.sel::before { border-color: #2b6cff; background: #2b6cff; box-shadow: 0 0 0 3px #eaf2ff; }
-  .tl-item .r1 { display: flex; align-items: center; gap: 7px; }
-  .tl-item .vt { font-size: 12.5px; font-weight: 600; color: #3a4350; }
-  .tl-item.sel .vt { color: #2b6cff; }
-  .tl-item .ts { font-size: 11px; color: #aab2bd; margin-left: auto; }
-  .tl-item .td { font-size: 11.5px; color: #8a93a0; line-height: 1.5; margin-top: 3px;
-                 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .tl-item .now { font-size: 10px; color: #18a058; background: #e8f6ee; border-radius: 4px; padding: 0 5px; }
+  .tl { display: flex; flex-direction: column; gap: 10px; }
+  .tl-card { border: 2px solid #e6e8eb; border-radius: 10px; overflow: hidden; cursor: pointer;
+             background: #fff; transition: border-color .15s, box-shadow .15s; }
+  .tl-card:hover { border-color: #b9c6e6; }
+  .tl-card.sel { border-color: #2b6cff; box-shadow: 0 0 0 3px #eaf2ff; }
+  .tl-card .thumb { width: 100%; height: 108px; overflow: hidden; background: #f0f1f3; position: relative; }
+  .tl-card .thumb iframe { width: 1200px; height: 900px; transform: scale(0.2233); transform-origin: top left;
+                           border: 0; pointer-events: none; }
+  .tl-card .thumb .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+                        justify-content: center; color: #8a93a0; font-size: 12px; gap: 4px; }
+  .tl-card .meta { padding: 8px 10px 10px; }
+  .tl-card .meta .r1 { display: flex; align-items: center; gap: 6px; }
+  .tl-card .meta .vt { font-size: 12.5px; font-weight: 700; color: #1f2329; }
+  .tl-card.sel .meta .vt { color: #2b6cff; }
+  .tl-card .meta .ts { font-size: 11px; color: #aab2bd; margin-left: auto; }
+  .tl-card .meta .td { font-size: 11.5px; color: #8a93a0; line-height: 1.5; margin-top: 3px;
+                       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-origin: vertical; overflow: hidden; }
+  .tl-card .now { font-size: 10px; color: #18a058; background: #e8f6ee; border-radius: 4px; padding: 0 5px; }
 
   .side .empty { padding: 30px 10px; text-align: center; color: #aab2bd; font-size: 12.5px; line-height: 1.7; }
 
@@ -292,7 +296,7 @@ function renderFocus() {
         <div class="fd">${esc(v.desc)}</div>
       </div>
     </div>
-    <div class="sec-title">版本时间线<span class="n">共 ${a.versions.length} 版 · 最新在底部</span><span class="line"></span></div>
+    <div class="sec-title">版本缩略图<span class="n">共 ${a.versions.length} 版 · 最新在底部</span><span class="line"></span></div>
     <div class="tl" id="tl"></div>`;
 }
 
@@ -300,13 +304,20 @@ function renderTimeline() {
   const a = MANIFEST.artifacts.find(x => x.id === selArt);
   const tl = $('tl');
   if (!tl) return;
-  tl.innerHTML = a.versions.map(v => `
-    <div class="tl-item ${v.v===focusV?'sel':''}" data-v="${v.v}">
-      <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="now">当前</span>':''}<span class="ts">${fmtTs(v.ts)}</span></div>
-      <div class="td">${esc(v.desc)}</div>
-    </div>`).join('');
-  tl.querySelectorAll('.tl-item').forEach(it => it.onclick = () => { focusV = +it.dataset.v; renderAll(); });
-  const sel = tl.querySelector('.tl-item.sel');
+  tl.innerHTML = a.versions.map(v => {
+    const thumb = (a.type === 'html')
+      ? `<iframe src="${prevUrl(a, v.v)}" loading="lazy"></iframe>`
+      : `<div class="ph">\u{1F4C4}<div>${extOf(a)} 文件</div></div>`;
+    return `<div class="tl-card ${v.v===focusV?'sel':''}" data-v="${v.v}">
+      <div class="thumb">${thumb}</div>
+      <div class="meta">
+        <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="now">当前</span>':''}<span class="ts">${fmtTs(v.ts)}</span></div>
+        <div class="td">${esc(v.desc)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  tl.querySelectorAll('.tl-card').forEach(c => c.onclick = () => { focusV = +c.dataset.v; renderAll(); });
+  const sel = tl.querySelector('.tl-card.sel');
   if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
