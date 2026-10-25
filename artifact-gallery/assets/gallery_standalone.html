@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>交付物版本画廊（离线版）· Artifact Gallery</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; background: #f4f5f7; color: #1f2329; }
+  header { height: 52px; flex: 0 0 52px; background: #1f2329; color: #fff; display: flex; align-items: center; padding: 0 18px; gap: 12px; }
+  header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  header .sub { font-size: 12px; color: #b7bcc4; }
+  .layout { flex: 1; display: flex; min-height: 0; }
+  .art-list { width: 250px; flex: 0 0 250px; background: #fff; border-right: 1px solid #e6e8eb; overflow-y: auto; }
+  .art-list .item { padding: 11px 14px; border-bottom: 1px solid #f0f1f3; cursor: pointer; font-size: 13px; line-height: 1.4; display: flex; gap: 8px; align-items: flex-start; }
+  .art-list .item:hover { background: #f7f8fa; }
+  .art-list .item.active { background: #eaf2ff; border-left: 3px solid #2b6cff; padding-left: 11px; }
+  .art-list .item .badge { flex: 0 0 auto; background: #2b6cff; color: #fff; border-radius: 10px; font-size: 11px; padding: 1px 7px; margin-top: 1px; }
+  .art-list .item .nm { word-break: break-all; }
+  .center { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .center .bar { height: 46px; flex: 0 0 46px; background: #fff; border-bottom: 1px solid #e6e8eb; display: flex; align-items: center; padding: 0 14px; gap: 12px; }
+  .center .bar .title { font-size: 14px; font-weight: 600; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .center .bar .cur { font-size: 12px; color: #5a6573; }
+  .center .bar button { border: 1px solid #e6e8eb; background: #fff; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+  .center .bar button.revert { background: #2b6cff; color: #fff; border-color: #2b6cff; display: none; }
+  .center .bar button.revert:hover { background: #1d5bef; }
+  .preview-box { flex: 1; background: #fff; min-height: 0; }
+  .preview-box iframe { width: 100%; height: 100%; border: 0; }
+  .preview-box .dl { padding: 40px; text-align: center; color: #5a6573; }
+  .preview-box .dl a { color: #2b6cff; }
+  .versions { width: 268px; flex: 0 0 268px; background: #fafbfc; border-left: 1px solid #e6e8eb; overflow-y: auto; padding: 12px; }
+  .versions .vh { font-size: 12px; color: #8a93a0; margin: 2px 4px 10px; display: flex; justify-content: space-between; }
+  .vcard { background: #fff; border: 2px solid #e6e8eb; border-radius: 8px; margin-bottom: 12px; cursor: pointer; overflow: hidden; transition: border-color .15s; }
+  .vcard:hover { border-color: #b9c6e6; }
+  .vcard.active { border-color: #2b6cff; }
+  .vcard.current { border-color: #18a058; }
+  .vcard .thumb { width: 100%; height: 150px; overflow: hidden; background: #f0f1f3; position: relative; }
+  .vcard .thumb iframe { width: 1200px; height: 900px; transform: scale(0.213); transform-origin: top left; border: 0; pointer-events: none; }
+  .vcard .thumb .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8a93a0; font-size: 13px; gap: 6px; }
+  .vcard .meta { padding: 7px 10px; font-size: 12px; }
+  .vcard .meta .vtag { font-weight: 600; color: #1f2329; }
+  .vcard .meta .vtag .now { color: #18a058; font-size: 11px; margin-left: 6px; }
+  .vcard .meta .vts { color: #8a93a0; font-size: 11px; }
+  .vcard .meta .vdesc { color: #5a6573; margin-top: 3px; word-break: break-all; }
+  .empty { padding: 40px; text-align: center; color: #8a93a0; font-size: 13px; }
+  .hint { font-size: 11px; color: #8a93a0; padding: 6px 14px; background:#fff; border-top:1px solid #e6e8eb; }
+</style>
+</head>
+<body>
+<header>
+  <h1>交付物版本画廊（离线版）</h1>
+  <span class="sub" id="sub">左栏全部产物 / 中栏放大预览 / 右栏版本缩略图（最新在底部）· 点击旧版仅预览，回撤需让 AI 执行</span>
+</header>
+<div class="layout">
+  <div class="art-list" id="artList"></div>
+  <div class="center">
+    <div class="bar">
+      <span class="title" id="cTitle">请选择左侧产物</span>
+      <span class="cur" id="cCur"></span>
+      <button class="revert" id="cRevert">↩ 回撤到此版本</button>
+    </div>
+    <div class="preview-box" id="previewBox"><div class="empty">从右侧选择任意版本缩略图即可在此放大预览（不会改动文件）。</div></div>
+    <div class="hint">离线版只做浏览/对比；如需把某旧版本真正覆盖回工作文件，点中栏「回撤」会复制回撤指令，发给 AI 即可执行。</div>
+  </div>
+  <div class="versions" id="versions"></div>
+</div>
+
+<script id="DATA" type="application/json">__DATA__</script>
+<script>
+let DATA = JSON.parse(document.getElementById('DATA').textContent);
+let selArt = null, selVer = null;
+const $ = id => document.getElementById(id);
+
+function esc(s){ return (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function renderList() {
+  const el = $('artList');
+  if (!DATA.artifacts.length) { el.innerHTML = '<div class="empty">暂无产物，运行 register_version.py 登记</div>'; return; }
+  el.innerHTML = DATA.artifacts.map(a => `
+    <div class="item ${a.id===selArt?'active':''}" data-id="${esc(a.id)}">
+      <span class="badge">v${a.current}</span>
+      <span class="nm">${esc(a.name)}</span>
+    </div>`).join('');
+  el.querySelectorAll('.item').forEach(it => it.onclick = () => selectArt(it.dataset.id));
+}
+
+function selectArt(id) {
+  selArt = id;
+  const a = DATA.artifacts.find(x => x.id === id);
+  selVer = a ? a.current : null;
+  renderList(); renderVersions(); showPreview();
+}
+
+function renderVersions() {
+  const a = DATA.artifacts.find(x => x.id === selArt);
+  const box = $('versions');
+  if (!a) { box.innerHTML = '<div class="empty">选择产物后显示版本时间线</div>'; return; }
+  const cards = a.versions.map(v => {
+    const isCur = v.v === a.current;
+    const isSel = v.v === selVer;
+    const thumb = (a.type === 'html')
+      ? `<iframe srcdoc='${esc(v.html).replace(/'/g,"&#39;")}' loading="lazy"></iframe>`
+      : `<div class="ph">📄<div>${esc(a.type.toUpperCase())} 文件</div></div>`;
+    return `<div class="vcard ${isSel?'active':''} ${isCur?'current':''}" data-v="${v.v}">
+      <div class="thumb">${thumb}</div>
+      <div class="meta"><div class="vtag">v${v.v}${isCur?'<span class="now">当前</span>':''}</div>
+      <div class="vts">${v.ts}</div><div class="vdesc">${esc(v.desc)}</div></div></div>`;
+  }).join('');
+  box.innerHTML = `<div class="vh"><span>版本时间线</span><span>共 ${a.versions.length} 版</span></div>` + cards;
+  box.querySelectorAll('.vcard').forEach(c => c.onclick = () => { selVer = +c.dataset.v; renderVersions(); showPreview(); });
+}
+
+function showPreview() {
+  const a = DATA.artifacts.find(x => x.id === selArt);
+  if (!a) return;
+  $('cTitle').textContent = a.name;
+  const v = a.versions.find(x => x.v === selVer);
+  $('cCur').textContent = v ? `查看 v${v.v} · ${v.ts}` : '';
+  const revertBtn = $('cRevert');
+  revertBtn.style.display = (v && v.v !== a.current) ? 'inline-block' : 'none';
+  const box = $('previewBox');
+  if (a.type === 'html') {
+    box.innerHTML = `<iframe srcdoc='${esc(v.html).replace(/'/g,"&#39;")}'></iframe>`;
+  } else {
+    box.innerHTML = `<div class="dl">此产物为 ${esc(a.type.toUpperCase())} 文件，无法直接预览。<br><br><a href="${v.datauri}" download="${esc(a.name)}">点击下载 / 打开</a></div>`;
+  }
+}
+
+$('cRevert').onclick = () => {
+  if (selVer == null) return;
+  const a = DATA.artifacts.find(x => x.id === selArt);
+  const text = `请回撤交付物「${a.id}」到 v${selVer}（复制到工作文件并记录新版本）`;
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(()=>{}); }
+  alert('已复制回撤指令到剪贴板：\n\n' + text + '\n\n把它发给我（AI），我就会把该版本复制回工作文件并登记为新版本。\n（离线版无法自动写文件，这是有意为之——回撤是破坏性操作，必须你确认后才执行。）');
+};
+
+renderList();
+if (DATA.artifacts.length) selectArt(DATA.artifacts[0].id);
+</script>
+</body>
+</html>
