@@ -1,0 +1,8 @@
+# 本机安装态：技能被 WorkBuddy 安装在 ~/.workbuddy/skills/artifact-gallery/ 时是平铺结构，
+# 仓库以 artifact-gallery/ 子目录为唯一真源；根目录的平铺副本由安装/同步产生，不入库。
+/SKILL.md
+/assets/
+/scripts/
+/_user_meta.json
+.DS_Store
+__MACOSX/

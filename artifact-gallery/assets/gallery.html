@@ -8,165 +8,349 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
   body { display: flex; flex-direction: column; background: #f4f5f7; color: #1f2329; }
-  header { height: 52px; flex: 0 0 52px; background: #1f2329; color: #fff; display: flex; align-items: center; padding: 0 18px; gap: 12px; }
-  header h1 { font-size: 16px; margin: 0; font-weight: 600; }
-  header .sub { font-size: 12px; color: #b7bcc4; }
+
+  /* ---------- 顶栏 ---------- */
+  header { height: 54px; flex: 0 0 54px; background: #fff; border-bottom: 1px solid #e6e8eb;
+           display: flex; align-items: center; padding: 0 20px; gap: 14px; }
+  header .logo { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg,#2b6cff,#6ba3ff);
+                 color:#fff; font-size: 13px; font-weight: 700; display:flex; align-items:center; justify-content:center; }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+  header .sub { font-size: 12px; color: #8a93a0; }
+  header .spacer { flex: 1; }
+  header .stat { font-size: 12px; color: #5a6573; background: #f4f5f7; border: 1px solid #e6e8eb;
+                 border-radius: 20px; padding: 3px 12px; }
+
   .layout { flex: 1; display: flex; min-height: 0; }
-  /* 左栏：产物清单 */
-  .art-list { width: 250px; flex: 0 0 250px; background: #fff; border-right: 1px solid #e6e8eb; overflow-y: auto; }
-  .art-list .item { padding: 11px 14px; border-bottom: 1px solid #f0f1f3; cursor: pointer; font-size: 13px; line-height: 1.4; display: flex; gap: 8px; align-items: flex-start; }
-  .art-list .item:hover { background: #f7f8fa; }
-  .art-list .item.active { background: #eaf2ff; border-left: 3px solid #2b6cff; padding-left: 11px; }
-  .art-list .item .badge { flex: 0 0 auto; background: #2b6cff; color: #fff; border-radius: 10px; font-size: 11px; padding: 1px 7px; margin-top: 1px; }
-  .art-list .item .nm { word-break: break-all; }
-  /* 中栏：预览 */
-  .center { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .center .bar { height: 46px; flex: 0 0 46px; background: #fff; border-bottom: 1px solid #e6e8eb; display: flex; align-items: center; padding: 0 14px; gap: 12px; }
-  .center .bar .title { font-size: 14px; font-weight: 600; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .center .bar .cur { font-size: 12px; color: #5a6573; }
-  .center .bar button { border: 1px solid #e6e8eb; background: #fff; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
-  .center .bar button.revert { background: #2b6cff; color: #fff; border-color: #2b6cff; display: none; }
-  .center .bar button.revert:hover { background: #1d5bef; }
-  .center .bar a.open { font-size: 12px; color: #2b6cff; text-decoration: none; }
-  .preview-box { flex: 1; background: #fff; min-height: 0; }
-  .preview-box iframe { width: 100%; height: 100%; border: 0; }
-  .preview-box .dl { padding: 40px; text-align: center; color: #5a6573; }
-  .preview-box .dl a { color: #2b6cff; }
-  /* 右栏：版本缩略图（PPT 风格，最新在底部） */
-  .versions { width: 268px; flex: 0 0 268px; background: #fafbfc; border-left: 1px solid #e6e8eb; overflow-y: auto; padding: 12px; }
-  .versions .vh { font-size: 12px; color: #8a93a0; margin: 2px 4px 10px; display: flex; justify-content: space-between; }
-  .vcard { background: #fff; border: 2px solid #e6e8eb; border-radius: 8px; margin-bottom: 12px; cursor: pointer; overflow: hidden; transition: border-color .15s; }
-  .vcard:hover { border-color: #b9c6e6; }
-  .vcard.active { border-color: #2b6cff; }
-  .vcard.current { border-color: #18a058; }
-  .vcard .thumb { width: 100%; height: 150px; overflow: hidden; background: #f0f1f3; position: relative; }
-  .vcard .thumb iframe { width: 1200px; height: 900px; transform: scale(0.213); transform-origin: top left; border: 0; pointer-events: none; }
-  .vcard .thumb .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8a93a0; font-size: 13px; gap: 6px; }
-  .vcard .meta { padding: 7px 10px; font-size: 12px; }
-  .vcard .meta .vtag { font-weight: 600; color: #1f2329; }
-  .vcard .meta .vtag .now { color: #18a058; font-size: 11px; margin-left: 6px; }
-  .vcard .meta .vts { color: #8a93a0; font-size: 11px; }
-  .vcard .meta .vdesc { color: #5a6573; margin-top: 3px; word-break: break-all; }
-  .empty { padding: 40px; text-align: center; color: #8a93a0; font-size: 13px; }
+
+  /* ---------- 左栏：产物列表 ---------- */
+  .art-list { width: 232px; flex: 0 0 232px; background: #fff; border-right: 1px solid #e6e8eb;
+              overflow-y: auto; padding: 10px 8px; }
+  .art-list .sec-label { font-size: 11px; color: #8a93a0; padding: 4px 10px 8px; letter-spacing: .5px; }
+  .art-list .item { padding: 9px 10px; border-radius: 9px; cursor: pointer; font-size: 13px;
+                    display: flex; gap: 9px; align-items: center; margin-bottom: 2px;
+                    border: 1px solid transparent; transition: background .12s; position: relative; }
+  .art-list .item:hover { background: #f5f7fa; }
+  .art-list .item.active { background: #eaf2ff; border-color: #cfe0ff; }
+  .art-list .item .ext { flex: 0 0 auto; width: 34px; height: 22px; border-radius: 5px; background: #eef1f5;
+                         color: #5a6573; font-size: 10px; font-weight: 600; display: flex; align-items: center;
+                         justify-content: center; letter-spacing: .3px; }
+  .art-list .item.active .ext { background: #2b6cff; color: #fff; }
+  .art-list .item .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .art-list .item .cnt { flex: 0 0 auto; font-size: 11px; color: #8a93a0; background: #f4f5f7;
+                         border-radius: 9px; padding: 1px 7px; }
+  .art-list .item .chev { flex: 0 0 auto; color: #b8bfc9; font-size: 11px; padding: 2px 3px; border-radius: 4px; }
+  .art-list .item:hover .chev { color: #2b6cff; background: #eaf2ff; }
+
+  /* ---------- 中栏：聚焦预览 ---------- */
+  .center { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 18px 20px 14px; gap: 14px; }
+  .info { background: #fff; border: 1px solid #e6e8eb; border-radius: 12px; padding: 16px 18px;
+          box-shadow: 0 1px 2px rgba(31,35,41,.03); }
+  .info .row1 { display: flex; align-items: center; gap: 10px; }
+  .info .ext { width: 38px; height: 24px; border-radius: 6px; background: #eef1f5; color: #5a6573;
+               font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .info .name { font-size: 17px; font-weight: 600; flex: 1; min-width: 0;
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .info .acts { display: flex; gap: 8px; flex: 0 0 auto; }
+  .info .acts button, .info .acts a { border: 1px solid #e6e8eb; background: #fff; border-radius: 8px;
+                       padding: 6px 13px; font-size: 12.5px; cursor: pointer; color: #3a4350;
+                       transition: all .12s; text-decoration: none; }
+  .info .acts button:hover, .info .acts a:hover { border-color: #c9d4e8; background: #f8fafd; }
+  .info .acts button.primary { background: #2b6cff; color: #fff; border-color: #2b6cff; display: none; }
+  .info .acts button.primary:hover { background: #1d5bef; }
+  .info .row2 { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .chip { font-size: 12px; border-radius: 6px; padding: 2px 9px; background: #f4f5f7; color: #5a6573; }
+  .chip.v { background: #eaf2ff; color: #2b6cff; font-weight: 600; }
+  .chip.cur { background: #e8f6ee; color: #18a058; font-weight: 600; }
+  .chip.focus { background: #fff4e0; color: #d9860d; font-weight: 600; }
+  .info .desc { margin-top: 11px; font-size: 13px; line-height: 1.65; color: #3a4350;
+                background: #fafbfc; border-left: 3px solid #d9e2f2; border-radius: 0 8px 8px 0; padding: 9px 13px; }
+
+  .preview-wrap { flex: 1; min-height: 0; background: #fff; border: 1px solid #e6e8eb; border-radius: 12px;
+                  box-shadow: 0 2px 10px rgba(31,35,41,.05); overflow: hidden; display: flex; }
+  .preview-box { flex: 1; min-width: 0; min-height: 0; }
+  .preview-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .dl { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 10px; color: #5a6573; padding: 40px; text-align: center; }
+  .dl .ficon { width: 62px; height: 62px; border-radius: 14px; background: #f4f5f7; border: 1px solid #e6e8eb;
+               display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .dl .fname { font-size: 14px; font-weight: 600; color: #1f2329; word-break: break-all; }
+  .dl a.btn { margin-top: 6px; background: #2b6cff; color: #fff; text-decoration: none; border-radius: 8px;
+              padding: 8px 20px; font-size: 13px; }
+  .dl a.btn:hover { background: #1d5bef; }
+  .empty-stage { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+                 gap: 8px; color: #8a93a0; }
+  .empty-stage .big { font-size: 34px; }
+
+  /* ---------- 右栏：聚焦 + 时间线 ---------- */
+  .side { width: 300px; flex: 0 0 300px; background: #fff; border-left: 1px solid #e6e8eb;
+          overflow-y: auto; padding: 14px 14px 18px; }
+  .side .sec-title { font-size: 12px; font-weight: 600; color: #5a6573; letter-spacing: .4px;
+                     margin: 2px 2px 10px; display: flex; align-items: center; gap: 6px; }
+  .side .sec-title .n { font-weight: 400; color: #8a93a0; }
+  .side .sec-title .line { flex: 1; height: 1px; background: #eef0f3; }
+
+  .focus-card { border: 2px solid #2b6cff; border-radius: 12px; overflow: hidden; margin-bottom: 18px;
+                box-shadow: 0 4px 16px rgba(43,108,255,.10); background: #fff; }
+  .focus-card .thumb { width: 100%; height: 148px; overflow: hidden; background: #f0f1f3; position: relative; }
+  .focus-card .thumb iframe { width: 100%; height: 100%; border: 0; pointer-events: none; }
+  .focus-card .thumb .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+                           justify-content: center; color: #8a93a0; font-size: 13px; gap: 6px; }
+  .focus-card .fmeta { padding: 10px 12px 12px; }
+  .focus-card .fmeta .r1 { display: flex; align-items: center; gap: 7px; }
+  .focus-card .fmeta .vt { font-size: 14px; font-weight: 700; }
+  .focus-card .fmeta .ts { font-size: 11.5px; color: #8a93a0; margin-left: auto; }
+  .focus-card .fmeta .fd { font-size: 12px; color: #5a6573; line-height: 1.55; margin-top: 6px;
+                           display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .tl { position: relative; padding-left: 18px; }
+  .tl::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 2px; background: #eef0f3; }
+  .tl-item { position: relative; padding: 7px 10px 7px 4px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; }
+  .tl-item:hover { background: #f5f7fa; }
+  .tl-item::before { content: ""; position: absolute; left: -16.5px; top: 13px; width: 9px; height: 9px;
+                     border-radius: 50%; background: #fff; border: 2px solid #c9ced6; }
+  .tl-item.sel::before { border-color: #2b6cff; background: #2b6cff; box-shadow: 0 0 0 3px #eaf2ff; }
+  .tl-item .r1 { display: flex; align-items: center; gap: 7px; }
+  .tl-item .vt { font-size: 12.5px; font-weight: 600; color: #3a4350; }
+  .tl-item.sel .vt { color: #2b6cff; }
+  .tl-item .ts { font-size: 11px; color: #aab2bd; margin-left: auto; }
+  .tl-item .td { font-size: 11.5px; color: #8a93a0; line-height: 1.5; margin-top: 3px;
+                 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .tl-item .now { font-size: 10px; color: #18a058; background: #e8f6ee; border-radius: 4px; padding: 0 5px; }
+
+  .side .empty { padding: 30px 10px; text-align: center; color: #aab2bd; font-size: 12.5px; line-height: 1.7; }
+
+  /* ---------- 版本飞出面板 ---------- */
+  .flyout { position: fixed; z-index: 100; width: 272px; max-height: min(420px, 82vh); overflow-y: auto;
+            background: #fff; border: 1px solid #e6e8eb; border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(31,35,41,.14); padding: 10px;
+            opacity: 0; transform: translateX(-8px); pointer-events: none; transition: opacity .16s, transform .16s; }
+  .flyout.open { opacity: 1; transform: none; pointer-events: auto; }
+  .flyout .fh { font-size: 12px; color: #8a93a0; padding: 2px 6px 9px; border-bottom: 1px solid #f0f1f3;
+                margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .flyout .fh b { color: #1f2329; font-weight: 600; font-size: 12.5px;
+                  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .flyout .fv { display: flex; gap: 9px; align-items: flex-start; padding: 8px 8px; border-radius: 8px; cursor: pointer; }
+  .flyout .fv:hover { background: #f5f7fa; }
+  .flyout .fv.sel { background: #eaf2ff; }
+  .flyout .fv .vb { flex: 0 0 auto; width: 26px; height: 20px; border-radius: 5px; background: #eef1f5; color: #5a6573;
+                    font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .flyout .fv.sel .vb { background: #2b6cff; color: #fff; }
+  .flyout .fv .fb { flex: 1; min-width: 0; }
+  .flyout .fv .fr { display: flex; align-items: center; gap: 6px; }
+  .flyout .fv .fl { font-size: 12px; color: #3a4350; }
+  .flyout .fv .now { font-size: 10px; color: #18a058; background: #e8f6ee; border-radius: 4px; padding: 0 5px; }
+  .flyout .fv .ts { font-size: 10.5px; color: #aab2bd; margin-left: auto; }
+  .flyout .fv .fd { font-size: 11.5px; color: #8a93a0; line-height: 1.5; margin-top: 3px;
+                    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 </style>
 </head>
 <body>
 <header>
+  <span class="logo">V</span>
   <h1>交付物版本画廊</h1>
-  <span class="sub" id="sub">Artifact Gallery · 左栏全部产物 / 中栏放大预览 / 右栏版本缩略图（最新在底部）</span>
+  <span class="sub">左栏悬浮展开版本 · 中栏放大预览 · 右栏聚焦与时间线 · 回撤直接写文件</span>
+  <span class="spacer"></span>
+  <span class="stat" id="stat"></span>
 </header>
+
 <div class="layout">
-  <div class="art-list" id="artList"><div class="empty">加载中…</div></div>
-  <div class="center">
-    <div class="bar">
-      <span class="title" id="cTitle">请选择左侧产物</span>
-      <span class="cur" id="cCur"></span>
-      <a class="open" id="cOpen" target="_blank" style="display:none">新标签页打开</a>
-      <button class="revert" id="cRevert">↩ 回撤到此版本</button>
-    </div>
-    <div class="preview-box" id="previewBox"><div class="empty">从右侧选择任意版本缩略图即可在此放大预览（不会改动文件）。</div></div>
-  </div>
-  <div class="versions" id="versions"><div class="empty">选择产物后显示版本时间线</div></div>
+  <aside class="art-list" id="artList"><div class="side empty">加载中…</div></aside>
+
+  <main class="center">
+    <div class="info" id="info"></div>
+    <div class="preview-wrap"><div class="preview-box" id="previewBox"></div></div>
+  </main>
+
+  <aside class="side" id="side"><div class="empty">加载中…</div></aside>
 </div>
+
+<div class="flyout" id="flyout"></div>
 
 <script>
 let MANIFEST = { artifacts: [] };
-let selArt = null, selVer = null;
-
+let selArt = null, focusV = null;   // focusV: 右栏聚焦 + 中栏预览的版本号
 const $ = id => document.getElementById(id);
+const closeTimer = { t: null };
 
 function esc(s){ return (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function extOf(a){ return (a.type === 'html' ? 'HTML' : a.type === 'docx' ? 'DOCX' : a.type === 'pptx' ? 'PPTX' : 'FILE'); }
+function fmtTs(ts){ return ts.replace(/^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})$/, '$1-$2-$3 $4:$5'); }
+function prevUrl(a, v){ return `/api/preview?art=${encodeURIComponent(a.id)}&v=${v}`; }
 
-async function loadManifest() {
-  const r = await fetch('/api/manifest');
-  MANIFEST = await r.json();
-  renderList();
-  if (!selArt && MANIFEST.artifacts.length) selectArt(MANIFEST.artifacts[0].id);
-}
-
+/* ---------- 左栏 ---------- */
 function renderList() {
   const el = $('artList');
-  if (!MANIFEST.artifacts.length) { el.innerHTML = '<div class="empty">暂无产物，运行 register_version.py 登记</div>'; return; }
-  el.innerHTML = MANIFEST.artifacts.map(a => `
-    <div class="item ${a.id===selArt?'active':''}" data-id="${a.id}">
-      <span class="badge">v${a.current}</span>
-      <span class="nm">${esc(a.name)}</span>
+  if (!MANIFEST.artifacts.length) { el.innerHTML = '<div class="side empty">暂无产物<br>运行 register_version.py 登记</div>'; return; }
+  el.innerHTML = '<div class="sec-label">全部产物 · ' + MANIFEST.artifacts.length + '</div>' + MANIFEST.artifacts.map(a => `
+    <div class="item ${a.id===selArt?'active':''}" data-id="${esc(a.id)}">
+      <span class="ext">${extOf(a)}</span>
+      <span class="nm" title="${esc(a.name)}">${esc(a.name)}</span>
+      <span class="cnt">${a.versions.length} 版</span>
+      <span class="chev" data-chev="${esc(a.id)}">›</span>
     </div>`).join('');
-  el.querySelectorAll('.item').forEach(it => it.onclick = () => selectArt(it.dataset.id));
+  el.querySelectorAll('.item').forEach(it => {
+    const id = it.dataset.id;
+    it.onclick = e => {
+      if (e.target.dataset.chev) { openFlyout(id, it); return; }
+      selectArt(id);
+    };
+    it.onmouseenter = () => openFlyout(id, it);
+  });
+  el.onmouseleave = scheduleCloseFlyout;
 }
 
-function selectArt(id) {
+/* ---------- 版本飞出面板 ---------- */
+function openFlyout(id, anchor) {
+  clearTimeout(closeTimer.t);
+  const a = MANIFEST.artifacts.find(x => x.id === id);
+  const f = $('flyout');
+  f.innerHTML = `<div class="fh">选择版本<b title="${esc(a.name)}">${esc(a.name)}</b></div>` + a.versions.map(v => `
+    <div class="fv ${id===selArt && v.v===focusV ? 'sel' : ''}" data-v="${v.v}">
+      <span class="vb">v${v.v}</span>
+      <span class="fb"><span class="fr"><span class="fl">v${v.v}</span>${v.v===a.current?'<span class="now">当前</span>':''}<span class="ts">${fmtTs(v.ts)}</span></span>
+      <span class="fd">${esc(v.desc)}</span></span>
+    </div>`).join('');
+  f.querySelectorAll('.fv').forEach(c => c.onclick = () => {
+    closeFlyout();
+    if (id !== selArt) { selArt = id; }
+    focusV = +c.dataset.v;
+    renderAll();
+  });
+  f.classList.add('open');
+  const r = anchor.getBoundingClientRect(), fw = f.offsetWidth, fh = f.offsetHeight;
+  let left = r.right + 8;
+  if (left + fw > window.innerWidth - 8) left = Math.max(8, r.left - fw - 8);
+  let top = r.top - 6;
+  if (top + fh > window.innerHeight - 10) top = window.innerHeight - fh - 10;
+  f.style.left = left + 'px';
+  f.style.top = Math.max(8, top) + 'px';
+  f.onmouseenter = () => clearTimeout(closeTimer.t);
+  f.onmouseleave = scheduleCloseFlyout;
+}
+function scheduleCloseFlyout(){ clearTimeout(closeTimer.t); closeTimer.t = setTimeout(closeFlyout, 180); }
+function closeFlyout(){ $('flyout').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFlyout(); });
+window.addEventListener('scroll', closeFlyout, true);
+
+/* ---------- 选中 / 聚焦 ---------- */
+function selectArt(id, v) {
   selArt = id;
   const a = MANIFEST.artifacts.find(x => x.id === id);
-  selVer = a ? a.current : null;
-  renderList();
-  renderVersions();
-  showPreview();
+  focusV = v != null ? v : a.current;
+  renderAll();
 }
+function renderAll() { renderList(); renderInfo(); renderFocus(); renderTimeline(); showPreview(); }
 
-function renderVersions() {
+/* ---------- 中栏信息头 ---------- */
+function renderInfo() {
   const a = MANIFEST.artifacts.find(x => x.id === selArt);
-  const box = $('versions');
-  if (!a) { box.innerHTML = '<div class="empty">选择产物后显示版本时间线</div>'; return; }
-  // 升序渲染 => 最新版本天然在最底部
-  const cards = a.versions.map(v => {
-    const isCur = v.v === a.current;
-    const isSel = v.v === selVer;
-    const thumb = (a.type === 'html')
-      ? `<iframe src="/api/preview?art=${encodeURIComponent(a.id)}&v=${v.v}" loading="lazy"></iframe>`
-      : `<div class="ph">📄<div>${esc(a.type.toUpperCase())} 文件</div></div>`;
-    return `<div class="vcard ${isSel?'active':''} ${isCur?'current':''}" data-v="${v.v}">
-      <div class="thumb">${thumb}</div>
-      <div class="meta">
-        <div class="vtag">v${v.v}${isCur?'<span class="now">当前</span>':''}</div>
-        <div class="vts">${v.ts}</div>
-        <div class="vdesc">${esc(v.desc)}</div>
-      </div>
-    </div>`;
-  }).join('');
-  box.innerHTML = `<div class="vh"><span>版本时间线</span><span>共 ${a.versions.length} 版</span></div>` + cards;
-  box.querySelectorAll('.vcard').forEach(c => c.onclick = () => { selVer = +c.dataset.v; renderVersions(); showPreview(); });
+  const box = $('info');
+  if (!a) { box.innerHTML = ''; return; }
+  const v = a.versions.find(x => x.v === focusV);
+  const isCur = v && v.v === a.current;
+  box.innerHTML = `
+    <div class="row1">
+      <span class="ext">${extOf(a)}</span>
+      <span class="name" title="${esc(a.name)}">${esc(a.name)}</span>
+      <span class="acts">
+        <a id="btnNew" href="${prevUrl(a, v.v)}" target="_blank">⧉ 新窗口打开</a>
+        <button id="btnRevert" class="primary">↩ 回撤到此版本</button>
+      </span>
+    </div>
+    <div class="row2">
+      <span class="chip v">v${v.v}</span>
+      ${isCur ? '<span class="chip cur">当前版本</span>' : '<span class="chip focus">聚焦旧版本</span>'}
+      <span class="chip">${fmtTs(v.ts)}</span>
+      <span class="chip">共 ${a.versions.length} 版</span>
+    </div>
+    <div class="desc">${esc(v.desc)}</div>`;
+  $('btnRevert').style.display = isCur ? 'none' : 'inline-block';
+  $('btnRevert').onclick = doRevert;
 }
 
+/* ---------- 右栏：聚焦卡 + 时间线 ---------- */
+function renderFocus() {
+  const a = MANIFEST.artifacts.find(x => x.id === selArt);
+  const box = $('side');
+  if (!a) { box.innerHTML = '<div class="empty">选择左侧产物后，<br>这里显示聚焦版本与时间线</div>'; return; }
+  const v = a.versions.find(x => x.v === focusV);
+  const thumb = (a.type === 'html')
+    ? `<iframe src="${prevUrl(a, v.v)}" loading="lazy"></iframe>`
+    : `<div class="ph">📄<div>${extOf(a)} 文件</div></div>`;
+  box.innerHTML = `
+    <div class="sec-title">聚焦版本<span class="line"></span></div>
+    <div class="focus-card">
+      <div class="thumb">${thumb}</div>
+      <div class="fmeta">
+        <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="chip cur">当前</span>':'<span class="chip focus">聚焦中</span>'}<span class="ts">${fmtTs(v.ts)}</span></div>
+        <div class="fd">${esc(v.desc)}</div>
+      </div>
+    </div>
+    <div class="sec-title">版本时间线<span class="n">共 ${a.versions.length} 版 · 最新在底部</span><span class="line"></span></div>
+    <div class="tl" id="tl"></div>`;
+}
+
+function renderTimeline() {
+  const a = MANIFEST.artifacts.find(x => x.id === selArt);
+  const tl = $('tl');
+  if (!tl) return;
+  tl.innerHTML = a.versions.map(v => `
+    <div class="tl-item ${v.v===focusV?'sel':''}" data-v="${v.v}">
+      <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="now">当前</span>':''}<span class="ts">${fmtTs(v.ts)}</span></div>
+      <div class="td">${esc(v.desc)}</div>
+    </div>`).join('');
+  tl.querySelectorAll('.tl-item').forEach(it => it.onclick = () => { focusV = +it.dataset.v; renderAll(); });
+  const sel = tl.querySelector('.tl-item.sel');
+  if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+/* ---------- 中栏预览 ---------- */
 function showPreview() {
   const a = MANIFEST.artifacts.find(x => x.id === selArt);
-  if (!a) return;
-  $('cTitle').textContent = a.name;
-  const v = a.versions.find(x => x.v === selVer);
-  $('cCur').textContent = v ? `查看 v${v.v} · ${v.ts}` : '';
-  const revertBtn = $('cRevert');
-  if (v && v.v !== a.current) { revertBtn.style.display = 'inline-block'; }
-  else { revertBtn.style.display = 'none'; }
   const box = $('previewBox');
+  if (!a) {
+    box.innerHTML = `<div class="empty-stage"><span class="big">🗂</span><span>从左侧选择产物，悬浮展开版本面板</span><span style="font-size:12px">点击任意版本，在此放大预览并置顶到右栏聚焦</span></div>`;
+    return;
+  }
+  const v = a.versions.find(x => x.v === focusV);
   if (a.type === 'html') {
-    $('cOpen').style.display = 'inline';
-    $('cOpen').href = `/api/preview?art=${encodeURIComponent(a.id)}&v=${selVer}`;
-    box.innerHTML = `<iframe src="/api/preview?art=${encodeURIComponent(a.id)}&v=${selVer}"></iframe>`;
+    box.innerHTML = `<iframe src="${prevUrl(a, v.v)}"></iframe>`;
   } else {
-    $('cOpen').style.display = 'inline';
-    $('cOpen').href = `/api/preview?art=${encodeURIComponent(a.id)}&v=${selVer}`;
-    box.innerHTML = `<div class="dl">此产物为 ${esc(a.type.toUpperCase())} 文件，无法直接预览。<br><br><a href="/api/preview?art=${encodeURIComponent(a.id)}&v=${selVer}">点击下载 / 打开</a></div>`;
+    box.innerHTML = `<div class="dl"><div class="ficon">${extOf(a) === 'DOCX' ? '📝' : extOf(a) === 'PPTX' ? '📊' : '📄'}</div>
+      <div class="fname">${esc(a.name)}</div>
+      <div>此产物为 ${extOf(a)} 文件，无法在画廊内直接预览</div>
+      <a class="btn" href="${prevUrl(a, v.v)}">下载 / 打开</a></div>`;
   }
 }
 
-$('cRevert').onclick = async () => {
-  if (selVer == null) return;
-  if (!confirm(`确认把「${selArt}」回撤到 v${selVer}？\n旧版本会被复制回工作文件，并记为一个新的回撤版本（历史保留）。`)) return;
+/* ---------- 回撤（服务版：直接写文件） ---------- */
+async function doRevert() {
+  if (focusV == null || !selArt) return;
+  const a = MANIFEST.artifacts.find(x => x.id === selArt);
+  if (!confirm(`确认把「${a.name}」回撤到 v${focusV}？\n旧版本会被复制回工作文件，并记为一个新的回撤版本（历史保留）。`)) return;
   const r = await fetch('/api/revert', {
     method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ art: selArt, v: selVer })
+    body: JSON.stringify({ art: selArt, v: focusV })
   });
   if (r.ok) {
     MANIFEST = await r.json();
-    // 回撤后 current 已变为新版本，保持查看刚回撤到的那一版
-    selVer = MANIFEST.artifacts.find(x => x.id === selArt).current;
-    renderList(); renderVersions(); showPreview();
-    alert('已回撤，当前版本已更新（历史版本仍保留在右侧）。');
+    focusV = MANIFEST.artifacts.find(x => x.id === selArt).current;
+    renderAll();
+    alert('已回撤，当前版本已更新（历史版本仍保留在时间线中）。');
   } else {
     alert('回撤失败：' + (await r.text()));
   }
-};
+}
 
+/* ---------- 启动 ---------- */
+async function loadManifest() {
+  const r = await fetch('/api/manifest');
+  MANIFEST = await r.json();
+  $('stat').textContent = MANIFEST.artifacts.length + ' 个产物 · ' +
+    MANIFEST.artifacts.reduce((s, a) => s + a.versions.length, 0) + ' 个版本';
+  renderList();
+  if (MANIFEST.artifacts.length) selectArt(MANIFEST.artifacts[0].id);
+}
 loadManifest();
 </script>
 </body>
