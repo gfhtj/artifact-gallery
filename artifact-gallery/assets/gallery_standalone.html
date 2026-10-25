@@ -24,7 +24,11 @@
 
   /* ---------- 左栏：产物列表 ---------- */
   .art-list { width: 232px; flex: 0 0 232px; background: #fff; border-right: 1px solid #e6e8eb;
-              overflow-y: auto; padding: 10px 8px; }
+              overflow-y: auto; padding: 10px 8px; transition: flex-basis .22s ease, padding .22s ease; }
+  body.left-hidden .art-list { flex-basis: 0; width: 0; padding: 0; border-right: 0; overflow: hidden; }
+  .side-toggle { flex: 0 0 22px; align-self: stretch; border: 0; border-right: 1px solid #e6e8eb;
+                 background: #fff; cursor: pointer; color: #aab2bd; font-size: 14px; padding: 0 0 3px; }
+  .side-toggle:hover { background: #f5f7fa; color: #2b6cff; }
   .art-list .sec-label { font-size: 11px; color: #8a93a0; padding: 4px 10px 8px; letter-spacing: .5px; }
   .art-list .item { padding: 9px 10px; border-radius: 9px; cursor: pointer; font-size: 13px;
                     display: flex; gap: 9px; align-items: center; margin-bottom: 2px;
@@ -97,9 +101,9 @@
                            justify-content: center; color: #8a93a0; font-size: 13px; gap: 6px; }
   .focus-card .fmeta { padding: 10px 12px 12px; }
   .focus-card .fmeta .r1 { display: flex; align-items: center; gap: 7px; }
-  .focus-card .fmeta .vt { font-size: 14px; font-weight: 700; }
-  .focus-card .fmeta .ts { font-size: 11.5px; color: #8a93a0; margin-left: auto; }
-  .focus-card .fmeta .fd { font-size: 12px; color: #5a6573; line-height: 1.55; margin-top: 6px;
+  .focus-card .fmeta .vt { font-size: 15px; font-weight: 700; }
+  .focus-card .fmeta .ts { font-size: 11.5px; color: #8a93a0; margin-top: 3px; }
+  .focus-card .fmeta .fd { font-size: 12px; color: #5a6573; line-height: 1.55; margin-top: 7px;
                            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
   .tl { position: relative; padding-left: 18px; }
@@ -149,17 +153,18 @@
   .hint .dot { width: 4px; height: 4px; border-radius: 50%; background: #c9ced6; }
 </style>
 </head>
-<body>
+<body class="left-hidden">
 <header>
   <span class="logo">V</span>
   <h1>交付物版本画廊</h1>
-  <span class="sub">左栏悬浮展开版本 · 中栏放大预览 · 右栏聚焦与时间线</span>
+  <span class="sub">左栏默认收起，点 › 展开 · 中栏放大预览 · 右栏聚焦与时间线</span>
   <span class="spacer"></span>
   <span class="stat" id="stat"></span>
 </header>
 
 <div class="layout">
   <aside class="art-list" id="artList"></aside>
+  <button class="side-toggle" id="sideToggle" title="展开产物列表">›</button>
 
   <main class="center">
     <div class="info" id="info"></div>
@@ -172,6 +177,7 @@
 <div class="hint">
   <span>点击旧版本仅预览，不会改动任何文件</span><span class="dot"></span>
   <span>需要把旧版本真正恢复成工作文件时，点中栏「回撤到此版本」复制指令发给 AI 执行</span><span class="dot"></span>
+  <span>点左侧 › 展开产物列表</span><span class="dot"></span>
   <span>Esc 关闭版本面板</span>
 </div>
 
@@ -301,7 +307,8 @@ function renderFocus() {
     <div class="focus-card">
       <div class="thumb">${thumb}</div>
       <div class="fmeta">
-        <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="chip cur">当前</span>':'<span class="chip focus">聚焦中</span>'}<span class="ts">${fmtTs(v.ts)}</span></div>
+        <div class="r1"><span class="vt">v${v.v}</span>${v.v===a.current?'<span class="chip cur">当前</span>':'<span class="chip focus">聚焦中</span>'}</div>
+        <div class="ts">${fmtTs(v.ts)}</div>
         <div class="fd">${esc(v.desc)}</div>
       </div>
     </div>
@@ -350,6 +357,14 @@ function doRevert() {
   if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(()=>{}); }
   alert('已复制回撤指令到剪贴板：\n\n' + text + '\n\n把它发给我（AI），我就会把该版本复制回工作文件并登记为新版本。\n（离线版无法自动写文件，这是有意为之——回撤是破坏性操作，必须你确认后才执行。）');
 }
+
+/* ---------- 左栏收起/展开 ---------- */
+const sideToggle = $('sideToggle');
+sideToggle.onclick = () => {
+  const hidden = document.body.classList.toggle('left-hidden');
+  sideToggle.textContent = hidden ? '›' : '‹';
+  sideToggle.title = hidden ? '展开产物列表' : '收起产物列表';
+};
 
 /* ---------- 启动 ---------- */
 $('stat').textContent = DATA.artifacts.length + ' 个产物 · ' +
